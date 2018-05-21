@@ -3,7 +3,7 @@ import time
 from random import randint
 
 # Constants
-# TIME = 30  # Global which stores the time the player has
+# time = 30  # Global which stores the time the player has
 
 class Question:
     """
@@ -12,8 +12,8 @@ class Question:
     def __init__(self):
         self.id = randint(0,3)
         self.idMap = ["+", "-", "*", "/"]
-        self.a = randint(0, 9)
-        self.b = randint(0, 9)
+        self.a = randint(1, 9)
+        self.b = randint(1, 9)
 
     def getQuestion(self):
         operator = self.idMap[self.id]
@@ -33,7 +33,7 @@ def get_time_stamp():
     return int(time.time())
 
 def main():
-    TIME = 15
+    time = 12
     count = 0
     while True:
         q = Question()
@@ -42,10 +42,11 @@ def main():
         now = get_time_stamp()
         if q.checkInput(answer):
             elapsed = now - then
-            TIME = TIME - elapsed
-            if TIME > 0:
+            time = time - elapsed
+            print(time)
+            if time > 0:
                 count += 1
-                TIME = TIME + 5
+                time += 1
                 if count > 4:
                     print("You win!")
                     break
