@@ -2,6 +2,9 @@ import math
 import time
 from random import randint
 
+# Constants
+# TIME = 30  # Global which stores the time the player has
+
 class Question:
     """
     Generates a random math question the user is asked to solve
@@ -26,18 +29,30 @@ class Question:
         if self.id == 3:
             return str(self.a // self.b) == input
 
+def get_time_stamp():
+    return int(time.time())
+
 def main():
+    TIME = 15
     count = 0
     while True:
-        count += 1
-
         q = Question()
+        then = get_time_stamp()
         answer = input(q.getQuestion())
+        now = get_time_stamp()
         if q.checkInput(answer):
-            if count > 4:
-                print("You win!")
+            elapsed = now - then
+            TIME = TIME - elapsed
+            if TIME > 0:
+                count += 1
+                TIME = TIME + 5
+                if count > 4:
+                    print("You win!")
+                    break
+                continue
+            else:
+                print("You are too slow and stupid. You are dead.")
                 break
-            continue
         else:
             print("You are wrong. Because of it, you have been eaten. Good job.")
             break
