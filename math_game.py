@@ -1,13 +1,16 @@
 import math
+from random import randint
 
 def getQuestion():
-    return "What is 2 + 2?: "
+    a = randint(0, 9)
+    b = randint(0, 9)
+    return "What is {} + {}?: ".format(a, b), a, b
 
 while True:
-    question = getQuestion()
+    question, a, b = getQuestion()
     answer = input(question)
-    if answer == str(4):
+    if answer == str(a + b):
         continue
     else:
-        print("You are wrong  .")
+        print("You are wrong. Because of it, you have been eaten. Good job.")
         break
