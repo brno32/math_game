@@ -3,9 +3,12 @@ import time
 from random import randint
 
 class Question:
+    """
+    Generates a random math question the user is asked to solve
+    """
     def __init__(self):
         self.id = randint(0,3)
-        self.idMap = ["+", "-", "*", "//"]
+        self.idMap = ["+", "-", "*", "/"]
         self.a = randint(0, 9)
         self.b = randint(0, 9)
 
@@ -23,17 +26,21 @@ class Question:
         if self.id == 3:
             return str(self.a // self.b) == input
 
-count = 0
-while True:
-    count += 1
+def main():
+    count = 0
+    while True:
+        count += 1
 
-    q = Question()
-    answer = input(q.getQuestion())
-    if q.checkInput(answer):
-        if count > 4:
-            print("You win!")
+        q = Question()
+        answer = input(q.getQuestion())
+        if q.checkInput(answer):
+            if count > 4:
+                print("You win!")
+                break
+            continue
+        else:
+            print("You are wrong. Because of it, you have been eaten. Good job.")
             break
-        continue
-    else:
-        print("You are wrong. Because of it, you have been eaten. Good job.")
-        break
+
+if __name__ == "__main__":
+    main()
