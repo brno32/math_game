@@ -6,8 +6,8 @@ def getQuestion():
 while True:
     question = getQuestion()
     answer = input(question)
-    if answer == '4':
+    if answer == str(4):
         continue
     else:
-        print("You are wrong.")
+        print("You are wrong  .")
         break
