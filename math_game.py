@@ -43,7 +43,6 @@ def main():
         if q.checkInput(answer):
             elapsed = now - then
             time = time - elapsed
-            print(time)
             if time > 0:
                 count += 1
                 time += 1
