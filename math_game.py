@@ -1,9 +1,14 @@
 import math
-import time
+import sys
+import os
+from threading import Thread
+from time import time, sleep
 from random import randint
 
-# Constants
-# time = 30  # Global which stores the time the player has
+TIMEOUT_MESSAGE = "You are too slow and stupid. You are dead."
+WRONG_MESSAGE = "You are wrong. Because of it, you have been eaten. Good job."
+VICTORY_MESSAGE = "You can do basic math! Hooray!"
+
 
 class Question:
     """
@@ -29,33 +34,33 @@ class Question:
         if self.id == 3:
             return str(self.a // self.b) == input
 
-def get_time_stamp():
-    return int(time.time())
-
 def main():
-    time = 12
     count = 0
     while True:
         q = Question()
-        then = get_time_stamp()
         answer = input(q.getQuestion())
-        now = get_time_stamp()
         if q.checkInput(answer):
-            elapsed = now - then
-            time = time - elapsed
-            if time > 0:
-                count += 1
-                time += 1
-                if count > 4:
-                    print("You win!")
-                    break
-                continue
-            else:
-                print("You are too slow and stupid. You are dead.")
-                break
+            count += 1
+            if count > 4:
+                print(VICTORY_MESSAGE)
+                sys.exit(0)
+                return
+            continue
         else:
-            print("You are wrong. Because of it, you have been eaten. Good job.")
-            break
+            print(WRONG_MESSAGE)
+            sys.exit(0)
+            return
+
+def timer():
+    for i in range(15):
+        sleep(1)
+    print(TIMEOUT_MESSAGE)
+    sys.exit(0)
+    return
 
 if __name__ == "__main__":
-    main()
+    timer_thread = Thread(target=timer)
+    game = Thread(target=main)
+    timer_thread.start()
+    game.start()
+    sys.exit(0)
