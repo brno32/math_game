@@ -1,12 +1,7 @@
-import math
-import sys
 import os
-from threading import Thread, Event
-from multiprocessing import Process
-from time import time, sleep
+from threading import Thread
+from time import sleep
 from random import randint
-
-from subprocess import Popen, PIPE
 
 TIMEOUT_MESSAGE = "You are too slow and stupid. You are dead."
 WRONG_MESSAGE = "You are wrong. Because of it, you have been eaten. Good job."
@@ -14,12 +9,14 @@ VICTORY_MESSAGE = "You win! You can do (very) basic math! Hooray!"
 
 LINE_BREAK = '\n'
 
+
 class Question:
     """
     Generates a random math question the user is asked to solve
     """
+
     def __init__(self):
-        self.id = randint(0,3)
+        self.id = randint(0, 3)
         self.idMap = ["+", "-", "*", "/"]
         self.a = randint(1, 9)
         self.b = randint(1, 9)
@@ -38,6 +35,7 @@ class Question:
         if self.id == 3:
             return str(self.a // self.b) == input
 
+
 def questions():
     count = 0
     while timer_thread.is_alive():
@@ -54,6 +52,7 @@ def questions():
             break
     return
 
+
 def timer():
     for i in range(1):
         sleep(1)
@@ -63,6 +62,7 @@ def timer():
         print(LINE_BREAK + TIMEOUT_MESSAGE)
         os._exit(0)
     return
+
 
 if __name__ == "__main__":
     game = Thread(target=questions)
