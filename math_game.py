@@ -2,13 +2,17 @@ import math
 import sys
 import os
 from threading import Thread, Event
+from multiprocessing import Process
 from time import time, sleep
 from random import randint
+
+from subprocess import Popen, PIPE
 
 TIMEOUT_MESSAGE = "You are too slow and stupid. You are dead."
 WRONG_MESSAGE = "You are wrong. Because of it, you have been eaten. Good job."
 VICTORY_MESSAGE = "You win! You can do (very) basic math! Hooray!"
 
+LINE_BREAK = '\n'
 
 class Question:
     """
@@ -34,14 +38,12 @@ class Question:
         if self.id == 3:
             return str(self.a // self.b) == input
 
-def questions(stopFlag):
+def questions():
     count = 0
-    while True:
-        if not timer_thread.is_alive():
-            return
-        q = Question()
-        answer = input(q.getQuestion())
-        if q.checkInput(answer):
+    while timer_thread.is_alive():
+        question_obj = Question()
+        answer = input(question_obj.getQuestion())
+        if question_obj.checkInput(answer):
             count += 1
             if count > 4:
                 print(VICTORY_MESSAGE)
@@ -50,29 +52,23 @@ def questions(stopFlag):
         else:
             print(WRONG_MESSAGE)
             break
-    if not timer_thread.is_alive():
-        return
     return
 
 def timer():
-    for i in range(15):
+    for i in range(1):
         sleep(1)
         if not game.is_alive():
             return
     if game.is_alive():
-        # TODO: kill game thread here
-        pass
-    print(TIMEOUT_MESSAGE)
+        print(LINE_BREAK + TIMEOUT_MESSAGE)
+        os._exit(0)
     return
 
 if __name__ == "__main__":
-    stopFlag = Event()
-    game = Thread(target=questions, args=(stopFlag,))
+    game = Thread(target=questions)
     timer_thread = Thread(target=timer)
     timer_thread.start()
     game.start()
 
     timer_thread.join()
     game.join()
-
-    print('\nExecution ends')
