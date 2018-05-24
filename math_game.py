@@ -1,4 +1,5 @@
 import os
+import sys
 from threading import Thread
 from time import sleep
 from random import randint
@@ -7,10 +8,15 @@ DIFFICULTY_MAP = [20, 15, 10]
 
 DIFFICULTY_MESSAGE = """
 Please enter:\n
-1. for Easy. Timer Set to {} seconds\n
-2. for Medium. Timer Set to {} seconds\n
-3. for Hard. Timer Set to {} seconds \n
-""".format(DIFFICULTY_MAP[0], DIFFICULTY_MAP[1], DIFFICULTY_MAP[2])
+1. for Easy. Timer Set to {} seconds
+2. for Medium. Timer Set to {} seconds
+3. for Hard. Timer Set to {} seconds\n
+[1] [2] [3]: """.format(
+                    DIFFICULTY_MAP[0],
+                    DIFFICULTY_MAP[1],
+                    DIFFICULTY_MAP[2]
+)
+
 TIMEOUT_MESSAGE = "You are too slow and stupid. You are dead."
 WRONG_MESSAGE = "You are wrong. Because of it, you have been eaten. Good job."
 VICTORY_MESSAGE = "You win! You can do (very) basic math! Hooray!"
@@ -46,7 +52,11 @@ class Question:
 
 def getDifficulty():
     selection = input(DIFFICULTY_MESSAGE)
-    timer_duration = DIFFICULTY_MAP[int(selection) - 1]
+    selection = int(selection) - 1
+    if selection not in range(0, 3):
+        print("You failed the easy part. Please don\'t run for office.")
+        sys.exit()
+    timer_duration = DIFFICULTY_MAP[selection]
     return timer_duration
 
 
