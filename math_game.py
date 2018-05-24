@@ -3,6 +3,14 @@ from threading import Thread
 from time import sleep
 from random import randint
 
+DIFFICULTY_MAP = [20, 15, 10]
+
+DIFFICULTY_MESSAGE = """
+Please enter:\n
+1. for Easy. Timer Set to {} seconds\n
+2. for Medium. Timer Set to {} seconds\n
+3. for Hard. Timer Set to {} seconds \n
+""".format(DIFFICULTY_MAP[0], DIFFICULTY_MAP[1], DIFFICULTY_MAP[2])
 TIMEOUT_MESSAGE = "You are too slow and stupid. You are dead."
 WRONG_MESSAGE = "You are wrong. Because of it, you have been eaten. Good job."
 VICTORY_MESSAGE = "You win! You can do (very) basic math! Hooray!"
@@ -36,6 +44,12 @@ class Question:
             return str(self.a // self.b) == input
 
 
+def getDifficulty():
+    selection = input(DIFFICULTY_MESSAGE)
+    timer_duration = DIFFICULTY_MAP[int(selection) - 1]
+    return timer_duration
+
+
 def questions():
     count = 0
     while timer_thread.is_alive():
@@ -53,8 +67,8 @@ def questions():
     return
 
 
-def timer():
-    for i in range(1):
+def timer(duration):
+    for i in range(duration):
         sleep(1)
         if not game.is_alive():
             return
@@ -65,8 +79,11 @@ def timer():
 
 
 if __name__ == "__main__":
+    user_selected_diff = getDifficulty()
+
     game = Thread(target=questions)
-    timer_thread = Thread(target=timer)
+    timer_thread = Thread(target=timer, args=(user_selected_diff,))
+
     timer_thread.start()
     game.start()
 
