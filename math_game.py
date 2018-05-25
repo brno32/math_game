@@ -56,10 +56,9 @@ def promptForDifficulty():
             selection = int(selection)
         except ValueError:
             continue
-        selection = int(selection)
-        if selection in range(1, 4):
-            # Allows selection to correspond to array index
-            selection -= 1
+        # Allows selection to correspond to array index
+        selection = int(selection) - 1
+        if selection in range(0, 3):
             timer_duration = DIFFICULTY_MAP[selection]
             return timer_duration
 
