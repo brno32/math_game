@@ -3,24 +3,29 @@ from threading import Thread
 from time import sleep
 from random import randint
 
-DIFFICULTY_MAP = [20, 15, 10]
-
-DIFFICULTY_MESSAGE = """
-Please enter:\n
-1. for Easy. Timer Set to {} seconds
-2. for Medium. Timer Set to {} seconds
-3. for Hard. Timer Set to {} seconds\n
-Difficulty Level: """.format(
-                    DIFFICULTY_MAP[0],
-                    DIFFICULTY_MAP[1],
-                    DIFFICULTY_MAP[2],
+from constants import (
+    DIFFICULTY_MAP, DIFFICULTY_MESSAGE, TIMEOUT_MESSAGE, WRONG_MESSAGE,
+    VICTORY_MESSAGE, LINE_BREAK,
 )
 
-TIMEOUT_MESSAGE = "You are too slow and stupid. You are dead."
-WRONG_MESSAGE = "You are wrong. Because of it, you have been eaten. Good job."
-VICTORY_MESSAGE = "You win! You can do (very) basic math! Hooray!"
-
-LINE_BREAK = '\n'
+# DIFFICULTY_MAP = [20, 15, 10]
+#
+# DIFFICULTY_MESSAGE = """
+# Please enter:\n
+# 1. for Easy. Timer Set to {} seconds
+# 2. for Medium. Timer Set to {} seconds
+# 3. for Hard. Timer Set to {} seconds\n
+# Difficulty Level: """.format(
+#                     DIFFICULTY_MAP[0],
+#                     DIFFICULTY_MAP[1],
+#                     DIFFICULTY_MAP[2],
+# )
+#
+# TIMEOUT_MESSAGE = "You are too slow and stupid. You are dead."
+# WRONG_MESSAGE = "You are wrong. Because of it, you have been eaten. Good job."
+# VICTORY_MESSAGE = "You win! You can do (very) basic math! Hooray!"
+#
+# LINE_BREAK = '\n'
 
 
 class Question:
@@ -56,7 +61,7 @@ def promptForDifficulty():
             selection = int(selection)
         except ValueError:
             continue
-        # Allows selection to correspond to array index
+        # Subtraction makes selection to correspond to array index
         selection = int(selection) - 1
         if selection in range(0, 3):
             timer_duration = DIFFICULTY_MAP[selection]
