@@ -1,5 +1,4 @@
 import os
-import sys
 from threading import Thread
 from time import sleep
 from random import randint
@@ -11,10 +10,10 @@ Please enter:\n
 1. for Easy. Timer Set to {} seconds
 2. for Medium. Timer Set to {} seconds
 3. for Hard. Timer Set to {} seconds\n
-[1] [2] [3]: """.format(
+Difficulty Level: """.format(
                     DIFFICULTY_MAP[0],
                     DIFFICULTY_MAP[1],
-                    DIFFICULTY_MAP[2]
+                    DIFFICULTY_MAP[2],
 )
 
 TIMEOUT_MESSAGE = "You are too slow and stupid. You are dead."
@@ -50,14 +49,19 @@ class Question:
             return str(self.a // self.b) == input
 
 
-def getDifficulty():
-    selection = input(DIFFICULTY_MESSAGE)
-    selection = int(selection) - 1
-    if selection not in range(0, 3):
-        print("You failed the easy part. Please don\'t run for office.")
-        sys.exit()
-    timer_duration = DIFFICULTY_MAP[selection]
-    return timer_duration
+def promptForDifficulty():
+    while True:
+        selection = input(DIFFICULTY_MESSAGE)
+        try:
+            selection = int(selection)
+        except ValueError:
+            continue
+        selection = int(selection)
+        if selection in range(1, 4):
+            # Allows selection to correspond to array index
+            selection -= 1
+            timer_duration = DIFFICULTY_MAP[selection]
+            return timer_duration
 
 
 def questions():
@@ -89,10 +93,10 @@ def timer(duration):
 
 
 if __name__ == "__main__":
-    user_selected_diff = getDifficulty()
+    answer = promptForDifficulty()
 
     game = Thread(target=questions)
-    timer_thread = Thread(target=timer, args=(user_selected_diff,))
+    timer_thread = Thread(target=timer, args=(answer,))
 
     timer_thread.start()
     game.start()
