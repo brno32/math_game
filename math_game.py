@@ -4,7 +4,7 @@ from random import randint
 
 from constants import (
     DIFFICULTY_MAP, DIFFICULTY_MESSAGE, TIMEOUT_MESSAGE, WRONG_MESSAGE,
-    VICTORY_MESSAGE, LINE_BREAK,
+    VICTORY_MESSAGE, LINE_BREAK, PLAY_AGAIN_MESSAGE
 )
 
 
@@ -54,7 +54,7 @@ def questions():
         question_obj = Question()
         answer = input(question_obj.getQuestion())
         if not timer_thread.is_alive():
-            break
+            break  # If the timer is up, end the game
         if question_obj.checkInput(answer):
             count += 1
             if count > 4:
@@ -65,10 +65,6 @@ def questions():
             print(WRONG_MESSAGE)
             break
     return
-
-
-def getState():
-    pass
 
 
 def timer(duration):
@@ -83,15 +79,24 @@ def timer(duration):
 
 
 if __name__ == "__main__":
-    answer = promptForDifficulty()
+    while True:
+        answer = promptForDifficulty()
+        timer_thread = Thread(target=timer, args=(answer,))
+        game = Thread(target=questions)
 
-    game = Thread(target=questions)
-    timer_thread = Thread(target=timer, args=(answer,))
+        timer_thread.start()
+        game.start()
 
-    isAgain = False
+        timer_thread.join()
+        game.join()
 
-    timer_thread.start()
-    game.start()
-
-    timer_thread.join()
-    game.join()
+        while True:
+            reply = input(PLAY_AGAIN_MESSAGE)
+            if reply == 'y' or reply == 'n':
+                break
+            else:
+                continue
+        if reply == 'y':
+            continue
+        elif reply == 'n':
+            break
