@@ -11,7 +11,8 @@ Difficulty Level: """.format(
                     DIFFICULTY_MAP[2],
 )
 
-TIMEOUT_MESSAGE = "You are too slow and stupid. You are dead."
+TIMEOUT_MESSAGE = "You are too slow and stupid, and you have failed." \
+                    "\nPlease hit Enter to exit: "
 WRONG_MESSAGE = "You are wrong. Because of it, you have been eaten. Good job."
 VICTORY_MESSAGE = "You win! You can do (very) basic math! Hooray!"
 
