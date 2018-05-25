@@ -4,13 +4,14 @@ from random import randint
 
 from constants import (
     DIFFICULTY_MAP, DIFFICULTY_MESSAGE, TIMEOUT_MESSAGE, WRONG_MESSAGE,
-    VICTORY_MESSAGE, LINE_BREAK, PLAY_AGAIN_MESSAGE
+    VICTORY_MESSAGE, LINE_BREAK, PLAY_AGAIN_MESSAGE, THANK_YOU_MESSAGE
 )
 
 
 class Question:
     """
-    Generates a random math question the user is asked to solve
+    Generates random math question on instantiation
+    Provides instance method to check answer
     """
 
     def __init__(self):
@@ -40,8 +41,10 @@ def promptForDifficulty():
         try:
             selection = int(selection)
         except ValueError:
+            print('Please enter a real answer')
+            sleep(1)
             continue
-        # Subtraction makes selection to correspond to array index
+        # Subtraction makes selection correspond to array index
         selection = int(selection) - 1
         if selection in range(0, 3):
             timer_duration = DIFFICULTY_MAP[selection]
@@ -50,7 +53,7 @@ def promptForDifficulty():
 
 def questions():
     count = 0
-    while timer_thread.is_alive():
+    while True:
         question_obj = Question()
         answer = input(question_obj.getQuestion())
         if not timer_thread.is_alive():
@@ -71,32 +74,36 @@ def timer(duration):
     while True:
         for i in range(duration):
             sleep(1)
-            if not game.is_alive():
+            if not game_thread.is_alive():
                 return
-        if game.is_alive():
+        if game_thread.is_alive():
             print(LINE_BREAK + TIMEOUT_MESSAGE)
         return
+
+
+def askToPlayAgain():
+    while True:
+        reply = input(PLAY_AGAIN_MESSAGE)
+        if reply == 'y' or reply == 'n':
+            break
+        else:
+            continue
+    return reply == 'y'
 
 
 if __name__ == "__main__":
     while True:
         answer = promptForDifficulty()
         timer_thread = Thread(target=timer, args=(answer,))
-        game = Thread(target=questions)
+        game_thread = Thread(target=questions)
 
         timer_thread.start()
-        game.start()
+        game_thread.start()
 
         timer_thread.join()
-        game.join()
+        game_thread.join()
 
-        while True:
-            reply = input(PLAY_AGAIN_MESSAGE)
-            if reply == 'y' or reply == 'n':
-                break
-            else:
-                continue
-        if reply == 'y':
+        if askToPlayAgain():
             continue
-        elif reply == 'n':
-            break
+        break
+    print(THANK_YOU_MESSAGE)
