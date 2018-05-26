@@ -11,13 +11,13 @@ Difficulty Level: """.format(
                     DIFFICULTY_MAP[2],
 )
 
-TIMEOUT_MESSAGE = "You are too slow and stupid, and you have failed." \
-                    "\nPlease hit Enter to back out: "
+TIMEOUT_MESSAGE = "\nYou are too slow and stupid, and you have failed."
+
+CONFIRM_MESSAGE = "Please hit Enter to continue: "
+
 WRONG_MESSAGE = "You are wrong. Because of it, you have been eaten. Good job."
 VICTORY_MESSAGE = "You win! You can do (very) basic math! Hooray!"
 
 PLAY_AGAIN_MESSAGE = "Would you like to play again? (y/n): "
 
 THANK_YOU_MESSAGE = "Thanks for playing!"
-
-LINE_BREAK = '\n'

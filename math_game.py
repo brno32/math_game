@@ -3,8 +3,9 @@ from time import sleep
 from random import randint
 
 from constants import (
-    DIFFICULTY_MAP, DIFFICULTY_MESSAGE, TIMEOUT_MESSAGE, WRONG_MESSAGE,
-    VICTORY_MESSAGE, LINE_BREAK, PLAY_AGAIN_MESSAGE, THANK_YOU_MESSAGE
+    DIFFICULTY_MAP, DIFFICULTY_MESSAGE, TIMEOUT_MESSAGE,
+    WRONG_MESSAGE, VICTORY_MESSAGE, PLAY_AGAIN_MESSAGE,
+    CONFIRM_MESSAGE, THANK_YOU_MESSAGE,
 )
 
 
@@ -61,11 +62,16 @@ def questions():
         if question_obj.checkInput(answer):
             count += 1
             if count > 4:
-                print(VICTORY_MESSAGE)
+                print_and_sleep(VICTORY_MESSAGE)
+                # TODO: it'd be nice to run input(CONFIRM_MESSAGE)
+                # here, but this will also have to trigger some signal
+                # to turn off the timer; otherwise, TIMEOUT_MESSAGE
+                # might get printed will waiting for user input
                 break
             continue
         else:
-            print(WRONG_MESSAGE)
+            print_and_sleep(WRONG_MESSAGE)
+            # TODO: dito. see above
             break
     return
 
@@ -77,9 +83,13 @@ def timer(duration):
             if not game_thread.is_alive():
                 return
         if game_thread.is_alive():
-            print(LINE_BREAK + TIMEOUT_MESSAGE)
+            print(TIMEOUT_MESSAGE)
+            print(CONFIRM_MESSAGE)
         return
 
+def print_and_sleep(message_to_print):
+    print(message_to_print)
+    sleep(1)
 
 def askToPlayAgain():
     while True:
