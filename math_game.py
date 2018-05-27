@@ -1,6 +1,6 @@
 from threading import Thread
-from time import sleep
 from random import randint
+from time import sleep
 
 from constants import (
     DIFFICULTY_MAP, DIFFICULTY_MESSAGE, TIMEOUT_MESSAGE,
@@ -21,11 +21,11 @@ class Question:
         self.a = randint(1, 9)
         self.b = randint(1, 9)
 
-    def getQuestion(self):
+    def get_question(self):
         operator = self.idMap[self.id]
-        return "What is {} {} {}?: ".format(self.a, operator, self.b)
+        return "What is {} {} {} ?: ".format(self.a, operator, self.b)
 
-    def checkInput(self, input):
+    def check_input(self, input):
         if self.id == 0:
             return str(self.a + self.b) == input
         if self.id == 1:
@@ -36,7 +36,7 @@ class Question:
             return str(self.a // self.b) == input
 
 
-def promptForDifficulty():
+def prompt_for_difficulty():
     while True:
         selection = input(DIFFICULTY_MESSAGE)
         try:
@@ -56,10 +56,10 @@ def questions():
     count = 0
     while True:
         question_obj = Question()
-        answer = input(question_obj.getQuestion())
+        answer = input(question_obj.get_question())
         if not timer_thread.is_alive():
             break  # If the timer is up, end the game
-        if question_obj.checkInput(answer):
+        if question_obj.check_input(answer):
             count += 1
             if count > 4:
                 print_and_sleep(VICTORY_MESSAGE)
@@ -77,8 +77,9 @@ def questions():
 
 
 def timer(duration):
-    for i in range(duration):
+    while duration > 0:
         sleep(1)
+        duration -= 1
         if not game_thread.is_alive():
             return
     if game_thread.is_alive():
@@ -90,7 +91,7 @@ def print_and_sleep(message_to_print):
     print(message_to_print)
     sleep(1)
 
-def askToPlayAgain():
+def ask_to_play_again():
     while True:
         reply = input(PLAY_AGAIN_MESSAGE)
         if reply == 'y' or reply == 'n':
@@ -102,7 +103,7 @@ def askToPlayAgain():
 
 if __name__ == "__main__":
     while True:
-        answer = promptForDifficulty()
+        answer = prompt_for_difficulty()
         timer_thread = Thread(target=timer, args=(answer,))
         game_thread = Thread(target=questions)
 
@@ -112,7 +113,7 @@ if __name__ == "__main__":
         timer_thread.join()
         game_thread.join()
 
-        if askToPlayAgain():
+        if ask_to_play_again():
             continue
         break
     print(THANK_YOU_MESSAGE)
