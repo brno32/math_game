@@ -66,7 +66,7 @@ def questions():
                 # TODO: it'd be nice to run input(CONFIRM_MESSAGE)
                 # here, but this will also have to trigger some signal
                 # to turn off the timer; otherwise, TIMEOUT_MESSAGE
-                # might get printed will waiting for user input
+                # might get printed while waiting for user input
                 break
             continue
         else:
@@ -77,15 +77,14 @@ def questions():
 
 
 def timer(duration):
-    while True:
-        for i in range(duration):
-            sleep(1)
-            if not game_thread.is_alive():
-                return
-        if game_thread.is_alive():
-            print(TIMEOUT_MESSAGE)
-            print(CONFIRM_MESSAGE)
-        return
+    for i in range(duration):
+        sleep(1)
+        if not game_thread.is_alive():
+            return
+    if game_thread.is_alive():
+        print(TIMEOUT_MESSAGE)
+        print(CONFIRM_MESSAGE)
+    return
 
 def print_and_sleep(message_to_print):
     print(message_to_print)
