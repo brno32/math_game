@@ -8,7 +8,8 @@ from constants import (
     CONFIRM_MESSAGE, THANK_YOU_MESSAGE,
 )
 
-
+# TODO: this whole script should be more object oriented
+# Shared variables and methods should be moved to this/another class
 class Question:
     """
     Generates random math question on instantiation
@@ -23,7 +24,7 @@ class Question:
 
     def get_question(self):
         operator = self.idMap[self.id]
-        return "What is {} {} {} ?: ".format(self.a, operator, self.b)
+        return "What is {} {} {}?: ".format(self.a, operator, self.b)
 
     def check_input(self, input):
         if self.id == 0:
@@ -60,6 +61,8 @@ def questions():
         if not timer_thread.is_alive():
             break  # If the timer is up, end the game
         if question_obj.check_input(answer):
+            if bonus_lst:
+                bonus_lst.pop()
             count += 1
             if count > 4:
                 print_and_sleep(VICTORY_MESSAGE)
@@ -79,7 +82,10 @@ def questions():
 def timer(duration):
     while duration > 0:
         sleep(1)
-        duration -= 1
+        if add_more_time():
+            duration += 1
+        else:
+            duration -= 1
         if not game_thread.is_alive():
             return
     if game_thread.is_alive():
@@ -87,9 +93,11 @@ def timer(duration):
         print(CONFIRM_MESSAGE)
     return
 
+
 def print_and_sleep(message_to_print):
     print(message_to_print)
     sleep(1)
+
 
 def ask_to_play_again():
     while True:
@@ -101,11 +109,17 @@ def ask_to_play_again():
     return reply == 'y'
 
 
+def add_more_time():
+    return True if not bonus_lst else False
+
+
 if __name__ == "__main__":
     while True:
         answer = prompt_for_difficulty()
         timer_thread = Thread(target=timer, args=(answer,))
         game_thread = Thread(target=questions)
+
+        bonus_lst = list(range(4))
 
         timer_thread.start()
         game_thread.start()
