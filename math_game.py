@@ -8,21 +8,32 @@ from constants import (
     CONFIRM_MESSAGE, THANK_YOU_MESSAGE,
 )
 
-# TODO: this whole script should be more object oriented
-# Shared variables and methods should be moved to this/another class
+
 class Question:
     """
     Generates random math question on instantiation
     Provides instance method to check answer
     """
 
-    def __init__(self):
-        self.id = randint(0, 3)
+    def __init__(self, answer):
+        # TODO: What's the proper way to declare these in python?
+        self.id = None
+        self.a = None
+        self.b = None
         self.idMap = ["+", "-", "*", "/"]
-        self.a = randint(1, 9)
-        self.b = randint(1, 9)
+        self.timer_thread = Thread(target=self.timer, args=(answer,))
+        self.game_thread = Thread(target=self.questions)
+
+    def start_game(self):
+        self.timer_thread.start()
+        self.game_thread.start()
+        self.timer_thread.join()
+        self.game_thread.join()
 
     def get_question(self):
+        self.id = randint(0, 3)
+        self.a = randint(1, 9)
+        self.b = randint(1, 9)
         operator = self.idMap[self.id]
         return "What is {} {} {}?: ".format(self.a, operator, self.b)
 
@@ -35,6 +46,55 @@ class Question:
             return str(self.a * self.b) == input
         if self.id == 3:
             return str(self.a // self.b) == input
+
+    def questions(self):
+        count = 0
+        while True:
+            # question_obj = Question()
+            answer = input(self.get_question())
+            if not self.timer_thread.is_alive():
+                break  # If the timer is up, end the game
+            if self.check_input(answer):
+                count += 1
+                if count > 4:
+                    print_and_sleep(VICTORY_MESSAGE)
+                    # TODO: it'd be nice to run input(CONFIRM_MESSAGE)
+                    # here, but this will also have to trigger some signal
+                    # to turn off the timer; otherwise, TIMEOUT_MESSAGE
+                    # might get printed while waiting for user input
+                    break
+                continue
+            else:
+                print_and_sleep(WRONG_MESSAGE)
+                # TODO: dito. see above
+                break
+        return
+
+    def timer(self, duration):
+        while duration > 0:
+            sleep(1)
+            duration -= 1
+            if not self.game_thread.is_alive():
+                return
+        if self.game_thread.is_alive():
+            print(TIMEOUT_MESSAGE)
+            print(CONFIRM_MESSAGE)
+        return
+
+
+def print_and_sleep(message_to_print):
+    print(message_to_print)
+    sleep(1)
+
+
+def ask_to_play_again():
+    while True:
+        reply = input(PLAY_AGAIN_MESSAGE)
+        if reply == 'y' or reply == 'n':
+            break
+        else:
+            continue
+    return reply == 'y'
 
 
 def prompt_for_difficulty():
@@ -53,79 +113,12 @@ def prompt_for_difficulty():
             return timer_duration
 
 
-def questions():
-    count = 0
-    while True:
-        question_obj = Question()
-        answer = input(question_obj.get_question())
-        if not timer_thread.is_alive():
-            break  # If the timer is up, end the game
-        if question_obj.check_input(answer):
-            if bonus_lst:
-                bonus_lst.pop()
-            count += 1
-            if count > 4:
-                print_and_sleep(VICTORY_MESSAGE)
-                # TODO: it'd be nice to run input(CONFIRM_MESSAGE)
-                # here, but this will also have to trigger some signal
-                # to turn off the timer; otherwise, TIMEOUT_MESSAGE
-                # might get printed while waiting for user input
-                break
-            continue
-        else:
-            print_and_sleep(WRONG_MESSAGE)
-            # TODO: dito. see above
-            break
-    return
-
-
-def timer(duration):
-    while duration > 0:
-        sleep(1)
-        if add_more_time():
-            duration += 1
-        else:
-            duration -= 1
-        if not game_thread.is_alive():
-            return
-    if game_thread.is_alive():
-        print(TIMEOUT_MESSAGE)
-        print(CONFIRM_MESSAGE)
-    return
-
-
-def print_and_sleep(message_to_print):
-    print(message_to_print)
-    sleep(1)
-
-
-def ask_to_play_again():
-    while True:
-        reply = input(PLAY_AGAIN_MESSAGE)
-        if reply == 'y' or reply == 'n':
-            break
-        else:
-            continue
-    return reply == 'y'
-
-
-def add_more_time():
-    return True if not bonus_lst else False
-
-
 if __name__ == "__main__":
     while True:
         answer = prompt_for_difficulty()
-        timer_thread = Thread(target=timer, args=(answer,))
-        game_thread = Thread(target=questions)
 
-        bonus_lst = list(range(4))
-
-        timer_thread.start()
-        game_thread.start()
-
-        timer_thread.join()
-        game_thread.join()
+        game_obj = Question(answer)
+        game_obj.start_game()
 
         if ask_to_play_again():
             continue
