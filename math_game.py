@@ -9,19 +9,19 @@ from constants import (
 )
 
 
-class Question:
+class MathGame:
     """
     Generates random math question on instantiation
     Provides instance method to check answer
     """
 
-    def __init__(self, answer):
+    def __init__(self, difficulty):
         # TODO: What's the proper way to declare these in python?
         self.id = None
         self.a = None
         self.b = None
         self.idMap = ["+", "-", "*", "/"]
-        self.timer_thread = Thread(target=self.timer, args=(answer,))
+        self.timer_thread = Thread(target=self.timer, args=(difficulty,))
         self.game_thread = Thread(target=self.questions)
 
     def start_game(self):
@@ -115,9 +115,9 @@ def prompt_for_difficulty():
 
 if __name__ == "__main__":
     while True:
-        answer = prompt_for_difficulty()
+        difficulty = prompt_for_difficulty()
 
-        game_obj = Question(answer)
+        game_obj = MathGame(difficulty)
         game_obj.start_game()
 
         if ask_to_play_again():
