@@ -11,8 +11,8 @@ from constants import (
 
 class MathGame:
     """
-    Generates random math question on instantiation
-    Provides instance method to check answer
+    Generates series of random math questions
+    Provides instance method to check answers
     """
 
     def __init__(self, difficulty):
