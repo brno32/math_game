@@ -70,6 +70,7 @@ class MathGame:
         return
 
     def timer(self, duration):
+        duration = int(duration)
         while duration > 0:
             sleep(1)
             duration -= 1
@@ -89,6 +90,7 @@ def print_and_sleep(message_to_print):
 def ask_to_play_again():
     while True:
         reply = input(PLAY_AGAIN_MESSAGE)
+        reply = reply.lower()
         if reply == 'y' or reply == 'n':
             break
         else:

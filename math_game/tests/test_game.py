@@ -1,39 +1,83 @@
-from math_game.scripts.game import MathGame
+import pytest
+import sys
+from io import StringIO
+from contextlib import contextmanager
+from math_game.scripts.constants import DIFFICULTY_MAP
+from math_game.scripts.game import (
+    MathGame, prompt_for_difficulty, ask_to_play_again
+)
 
 
-def test_difficulty_select():
-    # difficulty = prompt_for_difficulty()
-    assert True
+@contextmanager
+def replace_stdin(target):
+    orig = sys.stdin
+    sys.stdin = target
+    yield
+    sys.stdin = orig
 
 
-def test_easy():
-    game = MathGame(3)
+@pytest.mark.parametrize("difficulty", [
+    ("1"), ("2"), ("3"),
+])
+def test_difficulty_select(difficulty):
+    with replace_stdin(StringIO(difficulty)):
+        duration = prompt_for_difficulty()
+    assert duration == DIFFICULTY_MAP[int(difficulty) - 1]
+
+
+@pytest.mark.parametrize("difficulty", [
+    ("1"), ("2"), ("3"),
+])
+def test_question(difficulty):
+    game = MathGame(difficulty)
     question = game.get_question()
     assert type(question) == str
 
+    if game.id == 0:
+        answer = game.a + game.b
+        assert game.check_input(str(answer))
+    if game.id == 1:
+        answer = game.a - game.b
+        assert game.check_input(str(answer))
+    if game.id == 2:
+        answer = game.a * game.b
+        assert game.check_input(str(answer))
+    if game.id == 3:
+        answer = game.a // game.b
+        assert game.check_input(str(answer))
+
+
+@pytest.mark.parametrize("difficulty", [
+    ("1"), ("2"), ("3"),
+])
+def test_timer(difficulty):
+    game = MathGame(difficulty)
     game.timer_thread.start()
     assert game.timer_thread.is_alive
 
-
-def test_medium():
+    # TODO: test elapsed time
     assert True
 
 
-def test_hard():
-    assert True
+# def test_win():
+#     assert True
 
 
-def test_win():
-    assert True
+# def test_lose():
+#     assert True
 
 
-def test_lose():
-    assert True
+@pytest.mark.parametrize("answer", [
+    ("y"), ("Y"),
+])
+def test_want_to_play_again(answer):
+    with replace_stdin(StringIO(answer)):
+        assert ask_to_play_again()
 
 
-def test_play_again():
-    assert True
-
-
-def test_quit():
-    assert True
+@pytest.mark.parametrize("answer", [
+    ("n"), ("N"),
+])
+def test_dont_want_to_play_again(answer):
+    with replace_stdin(StringIO(answer)):
+        assert not ask_to_play_again()
