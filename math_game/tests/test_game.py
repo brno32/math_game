@@ -1,9 +1,18 @@
+from math_game.scripts.game import MathGame
+
+
 def test_difficulty_select():
+    # difficulty = prompt_for_difficulty()
     assert True
 
 
 def test_easy():
-    assert True
+    game = MathGame(3)
+    question = game.get_question()
+    assert type(question) == str
+
+    game.timer_thread.start()
+    assert game.timer_thread.is_alive
 
 
 def test_medium():

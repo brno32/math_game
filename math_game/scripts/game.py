@@ -2,7 +2,7 @@ from threading import Thread
 from random import randint
 from time import sleep
 
-from constants import (
+from math_game.scripts.constants import (
     DIFFICULTY_MAP, DIFFICULTY_MESSAGE, TIMEOUT_MESSAGE,
     WRONG_MESSAGE, VICTORY_MESSAGE, PLAY_AGAIN_MESSAGE,
     CONFIRM_MESSAGE, THANK_YOU_MESSAGE,
@@ -16,7 +16,6 @@ class MathGame:
     """
 
     def __init__(self, difficulty):
-        # TODO: What's the proper way to declare these in python?
         self.id = None
         self.a = None
         self.b = None
