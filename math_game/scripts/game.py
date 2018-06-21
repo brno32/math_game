@@ -49,7 +49,6 @@ class MathGame:
     def questions(self):
         count = 0
         while True:
-            # question_obj = Question()
             answer = input(self.get_question())
             if not self.timer_thread.is_alive():
                 break  # If the timer is up, end the game

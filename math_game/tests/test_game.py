@@ -59,12 +59,22 @@ def test_timer(difficulty):
     assert True
 
 
-# def test_win():
-#     assert True
+def test_win():
+    game = MathGame("1")
+    game.start_game()
+
+    with replace_stdin(StringIO("1")):
+        game.questions()
+    assert True
 
 
-# def test_lose():
-#     assert True
+def test_lose():
+    game = MathGame("1")
+    game.start_game()
+
+    with replace_stdin(StringIO("1")):
+        game.questions()
+    assert not game.check_input("82")
 
 
 @pytest.mark.parametrize("answer", [
