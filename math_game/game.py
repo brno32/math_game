@@ -2,10 +2,10 @@ from threading import Thread
 from random import randint
 from time import sleep
 
-from math_game.scripts.constants import (
+from math_game.constants import (
     DIFFICULTY_MAP, DIFFICULTY_MESSAGE, TIMEOUT_MESSAGE,
     WRONG_MESSAGE, VICTORY_MESSAGE, PLAY_AGAIN_MESSAGE,
-    CONFIRM_MESSAGE, THANK_YOU_MESSAGE,
+    CONFIRM_MESSAGE,
 )
 
 
@@ -29,10 +29,12 @@ class MathGame:
         self.timer_thread.join()
         self.game_thread.join()
 
-    def get_question(self):
+    def randomize(self):
         self.id = randint(0, 3)
         self.a = randint(1, 9)
         self.b = randint(1, 9)
+
+    def get_question(self):
         operator = self.idMap[self.id]
         return "What is {} {} {}?: ".format(self.a, operator, self.b)
 
@@ -49,6 +51,7 @@ class MathGame:
     def questions(self):
         count = 0
         while True:
+            self.randomize()
             answer = input(self.get_question())
             if not self.timer_thread.is_alive():
                 break  # If the timer is up, end the game
@@ -111,16 +114,3 @@ def prompt_for_difficulty():
         if selection in range(0, 3):
             timer_duration = DIFFICULTY_MAP[selection]
             return timer_duration
-
-
-if __name__ == "__main__":
-    while True:
-        difficulty = prompt_for_difficulty()
-
-        game_obj = MathGame(difficulty)
-        game_obj.start_game()
-
-        if ask_to_play_again():
-            continue
-        break
-    print(THANK_YOU_MESSAGE)
